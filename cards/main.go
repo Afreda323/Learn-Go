@@ -1,6 +1,11 @@
 package main
 
+import "fmt"
+
 func main() {
-	newDeck := deckFromFile("deck.csv")
-	newDeck.print()
+	deck := newDeck()
+	deck.print()
+	fmt.Println("____")
+	deck.shuffle()
+	deck.print()
 }

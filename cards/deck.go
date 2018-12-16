@@ -3,8 +3,10 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"strings"
+	"time"
 )
 
 type deck []string
@@ -61,4 +63,16 @@ func deckFromFile(fileName string) deck {
 	}
 	ss := strings.Split(string(bs), ", ")
 	return deck(ss)
+}
+
+// Fisher-Yates shuffle the deck
+func (d deck) shuffle() {
+	// use timestamp to generate a different seed for every shuffle
+	source := rand.NewSource(time.Now().UnixNano())
+	r := rand.New(source)
+	// implement yates shuffle
+	for i := range d {
+		ranInt := r.Intn(len(d) - 1)
+		d[i], d[ranInt] = d[ranInt], d[i]
+	}
 }
