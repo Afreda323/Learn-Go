@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"io/ioutil"
+	"strings"
+)
 
 type deck []string
 
@@ -34,4 +38,14 @@ func (d deck) print() {
 // as well as updated deck
 func deal(d deck, handSize int) (hand deck, deck deck) {
 	return d[:handSize], d[handSize:]
+}
+
+// Return a string version of the deck
+func (d deck) toString() string {
+	return strings.Join(d, ", ")
+}
+
+// Saves the deck to a txt file
+func (d deck) saveToFile(fileName string) error {
+	return ioutil.WriteFile(fileName, []byte(d.toString()), 0666)
 }
