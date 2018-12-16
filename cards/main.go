@@ -1,11 +1,11 @@
 package main
 
-import "fmt"
-
 func main() {
-	deck := newDeck()
-	deck.print()
-	fmt.Println("____")
-	deck.shuffle()
+	cards := newDeck()
+	cards.shuffle()
+
+	hand, deck := deal(cards, 6)
+
+	hand.print()
 	deck.print()
 }
