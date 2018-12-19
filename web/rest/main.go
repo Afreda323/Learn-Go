@@ -12,7 +12,8 @@ import (
 
 func main() {
 	router := mux.NewRouter()
-	router.Use(app.JwtAuth)
+	router.Use(app.JwtAuth) // pull jwt and assign user to context
+	// Init routes
 	router.HandleFunc("/api/user/new", controllers.CreateAccount).Methods("POST")
 	router.HandleFunc("/api/user/login", controllers.Authenticate).Methods("POST")
 	router.HandleFunc("/api/me/contacts", controllers.GetContactsFor).Methods("GET")

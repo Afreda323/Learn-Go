@@ -11,6 +11,8 @@ import (
 
 var db *gorm.DB
 
+// init - connect to db using env vars
+// auto migrate
 func init() {
 	// get dem env vars
 	e := godotenv.Load()
