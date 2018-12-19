@@ -76,3 +76,46 @@ func (account *Account) Create() map[string]interface{} {
 	response["account"] = account
 	return response
 }
+
+func Login(email string, password string) map[string]interface{} {
+	account := &Account{}
+
+	err := GetDB().Table("accounts").Where("email = ?", email).First(account).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return u.Message(false, "Email not found")
+		}
+
+		return u.Message(false, "DB error, please try again")
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(account.Password), []byte(password))
+	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword {
+		return u.Message(false, "Invalid login creds. Please try again")
+	}
+
+	account.Password = ""
+
+	tk := &Token{UserID: account.ID}
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), tk)
+	tokenString, _ := token.SignedString([]byte(os.Getenv("token_password")))
+	account.Token = tokenString
+
+	resp := u.Message(true, "Logged In")
+	resp["account"] = account
+	return resp
+}
+
+// Func for getting a user by id
+func GetUser(id uint) *Account {
+	acc := &Account{}
+	GetDB().Table("accounts").Where("id = ?", id).First(acc)
+
+	if acc.Email == "" {
+		return nil
+	}
+
+	acc.Password = ""
+	return acc
+}
