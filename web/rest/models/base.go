@@ -38,7 +38,7 @@ func init() {
 
 	db = conn
 
-	db.Debug().AutoMigrate(&Account{})
+	db.Debug().AutoMigrate(&Account{}, &Contact{})
 }
 
 // GetDB - Get the connected instance of the db

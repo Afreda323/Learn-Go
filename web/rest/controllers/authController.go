@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-// CreateAccount - controller for /api/user/new
+// CreateAccount - POST /api/user/new
 func CreateAccount(w http.ResponseWriter, r *http.Request) {
 	account := &models.Account{}
 
@@ -21,7 +21,7 @@ func CreateAccount(w http.ResponseWriter, r *http.Request) {
 	u.Respond(w, resp)
 }
 
-// Authenticate - controller for /api/user/login
+// Authenticate - POST /api/user/login
 func Authenticate(w http.ResponseWriter, r *http.Request) {
 	account := &models.Account{}
 	err := json.NewDecoder(r.Body).Decode(account)
