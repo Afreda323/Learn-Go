@@ -1,6 +1,7 @@
 package app
 
 import (
+	"Learn-Go/web/rest/models"
 	u "Learn-Go/web/rest/utils"
 	"context"
 	"net/http"
@@ -37,6 +38,7 @@ func JwtAuth(next http.Handler) http.Handler {
 
 		splitToken := strings.Split(token, " ") // split token into ["Bearer", "token"]
 
+		// invalid header shape
 		if len(splitToken) != 2 {
 			response = u.Message(false, "Invalid/Malformed token provided")
 			w.WriteHeader(http.StatusForbidden)
@@ -48,7 +50,7 @@ func JwtAuth(next http.Handler) http.Handler {
 		tk := &models.token
 
 		token, err := jwt.ParseWithClaims(tokenVal, tk, func(token *jwt.Token) (interface{}, error) {
-			return []byte(os.Getenv("TOKEN_SECRET")), nil
+			return []byte(os.Getenv("token_password")), nil
 		})
 
 		if err != nil {
