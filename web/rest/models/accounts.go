@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
@@ -11,11 +12,13 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Token struct
 type Token struct {
 	UserID uint
 	jwt.StandardClaims
 }
 
+// Account struct
 type Account struct {
 	gorm.Model
 	Email    string `json:"email"`
@@ -40,6 +43,7 @@ func (account *Account) Validate() (map[string]interface{}, bool) {
 
 	// Make sure db is working properly
 	if err != nil && err != gorm.ErrRecordNotFound {
+		fmt.Println("Err:", err)
 		return u.Message(false, "Connection error. Please retry"), false
 	}
 
@@ -51,6 +55,7 @@ func (account *Account) Validate() (map[string]interface{}, bool) {
 	return u.Message(false, "Requirement passed"), true
 }
 
+// Create a user account
 func (account *Account) Create() map[string]interface{} {
 	if resp, ok := account.Validate(); !ok {
 		return resp
@@ -77,6 +82,7 @@ func (account *Account) Create() map[string]interface{} {
 	return response
 }
 
+// Login a user by their email and password
 func Login(email string, password string) map[string]interface{} {
 	account := &Account{}
 
@@ -107,7 +113,7 @@ func Login(email string, password string) map[string]interface{} {
 	return resp
 }
 
-// Func for getting a user by id
+// GetUser by id
 func GetUser(id uint) *Account {
 	acc := &Account{}
 	GetDB().Table("accounts").Where("id = ?", id).First(acc)

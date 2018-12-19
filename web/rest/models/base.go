@@ -38,10 +38,10 @@ func init() {
 
 	db = conn
 
-	db.Debug().AutoMigrate(&Contact, &Account)
+	db.Debug().AutoMigrate(&Account{})
 }
 
-// Get the connected instance of the db
+// GetDB - Get the connected instance of the db
 func GetDB() *gorm.DB {
 	return db
 }

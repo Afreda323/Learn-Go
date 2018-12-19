@@ -26,17 +26,17 @@ func JwtAuth(next http.Handler) http.Handler {
 		}
 
 		response := make(map[string]interface{})
-		token := r.Header.Get("Authorization") // get token header
+		tokenHeader := r.Header.Get("Authorization") // get token header
 
 		// if token is empty, send error message
-		if token == "" {
+		if tokenHeader == "" {
 			response = u.Message(false, "Auth token not provided")
 			w.WriteHeader(http.StatusForbidden)
 			u.Respond(w, response)
 			return
 		}
 
-		splitToken := strings.Split(token, " ") // split token into ["Bearer", "token"]
+		splitToken := strings.Split(tokenHeader, " ") // split token into ["Bearer", "token"]
 
 		// invalid header shape
 		if len(splitToken) != 2 {
@@ -47,7 +47,7 @@ func JwtAuth(next http.Handler) http.Handler {
 		}
 
 		tokenVal := splitToken[1]
-		tk := &models.token
+		tk := &models.Token{}
 
 		token, err := jwt.ParseWithClaims(tokenVal, tk, func(token *jwt.Token) (interface{}, error) {
 			return []byte(os.Getenv("token_password")), nil
@@ -68,7 +68,7 @@ func JwtAuth(next http.Handler) http.Handler {
 		}
 
 		// Everything went well
-		ctx := context.WithValue(r.Context(), "user", tk.userId)
+		ctx := context.WithValue(r.Context(), "user", tk.UserID)
 		r = r.WithContext(ctx)
 		next.ServeHTTP(w, r)
 	})
